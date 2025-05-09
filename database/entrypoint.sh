@@ -2,8 +2,8 @@
 # Launch MSSQL and send to background
 /opt/mssql/bin/sqlservr &
 
-# Wait 30 seconds for it to be available
-sleep 30s
+# Wait 50 seconds for it to be available
+sleep 50s
 
 echo "/scripts:"
 ls -l /scripts
