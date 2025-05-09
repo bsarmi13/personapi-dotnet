@@ -30,7 +30,7 @@ Este proyecto fue desarrollado como parte del laboratorio 1 del curso de desarro
 #### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu_usuario/personapi-dotnet.git
+git clone https://github.com/bsarmi13/personapi-dotnet.git
 cd personapi-dotnet
 ```
 
