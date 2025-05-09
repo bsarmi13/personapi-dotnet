@@ -19,8 +19,12 @@ builder.Services
     .AddScoped<IEstudiosRepository, EstudiosRepository>()
     .AddScoped<ITelefonoRepository, TelefonoRepository>();
 
-// 3) Añadir servicios MVC
+// 3) Aï¿½adir servicios MVC
 builder.Services.AddControllersWithViews();
+
+// Agrega Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -29,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
