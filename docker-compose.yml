@@ -1,4 +1,3 @@
-name: personapi
 services:
   sql_server:
     container_name: sql_server
@@ -31,7 +30,7 @@ services:
     build:
       context: ./personapi-dotnet
     ports:
-      - "${WEBAPP_PORT:-8081}:8080"
+      - "${WEBAPP_PORT:-8081}:80"
     depends_on:
       sql_server:
         condition: service_healthy

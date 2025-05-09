@@ -4,7 +4,7 @@
 -- -----------------------------------------------------
 
 -- Create the database if it doesn't exist
-IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'persona_db')
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'persona_db')
 BEGIN
     CREATE DATABASE persona_db;
     ALTER AUTHORIZATION ON DATABASE::persona_db TO sa;
