@@ -26,6 +26,7 @@ builder.Services
 
 // 3) A�adir servicios MVC
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 // Agrega Swagger
 builder.Services.AddEndpointsApiExplorer();
