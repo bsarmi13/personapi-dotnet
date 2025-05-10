@@ -5,13 +5,18 @@ using personapi_dotnet.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables(); 
+
 // 1) Registrar DbContext con SQL Server
 builder.Services.AddDbContext<PersonaDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
         )
 );
-
+Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 // 2) Registrar repositorios 
 builder.Services
     .AddScoped<IPersonaRepository, PersonaRepository>()
@@ -19,8 +24,12 @@ builder.Services
     .AddScoped<IEstudiosRepository, EstudiosRepository>()
     .AddScoped<ITelefonoRepository, TelefonoRepository>();
 
-// 3) Añadir servicios MVC
+// 3) Aï¿½adir servicios MVC
 builder.Services.AddControllersWithViews();
+
+// Agrega Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -30,6 +39,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

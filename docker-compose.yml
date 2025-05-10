@@ -1,0 +1,49 @@
+services:
+  sql_server:
+    container_name: sql_server
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-SecurePassword123}
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+      - ./database:/scripts/
+    networks:
+      - personapi-network
+    entrypoint: ["/scripts/entrypoint.sh"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -C -Q \"IF DB_ID('persona_db') IS NOT NULL SELECT 1 ELSE SELECT 0\" | grep -q 1",
+        ]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+
+  personapi:
+    container_name: personapi
+    build:
+      context: ./personapi-dotnet
+    ports:
+      - "${WEBAPP_PORT:-8081}:80"
+    depends_on:
+      sql_server:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sql_server,${MSSQL_PORT:-1433};Database=persona_db;User Id=sa;Password=${MSSQL_SA_PASSWORD:-SecurePassword123};TrustServerCertificate=True;"
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - personapi-network
+
+networks:
+  personapi-network:
+    driver: bridge
+
+volumes:
+  mssql_data:
+    driver: local

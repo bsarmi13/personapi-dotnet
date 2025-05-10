@@ -10,9 +10,9 @@ Este proyecto fue desarrollado como parte del laboratorio 1 del curso de desarro
 
 - .NET 7 (ASP.NET Core MVC)
 - Microsoft SQL Server 2022
-- Entity Framework Core
 - Swagger 3 para documentación de la API
-- Visual Studio Community 2022
+- Visual Studio Code o Visual Studio Community 2022
+- Docker y Docker Compose
 
 ---
 
@@ -20,52 +20,54 @@ Este proyecto fue desarrollado como parte del laboratorio 1 del curso de desarro
 
 ### 🔧 Prerrequisitos
 
-- SQL Server 2019 Express (modo básico)
-- SQL Server Management Studio 18
-- Visual Studio Community 2022 con los siguientes componentes:
-  - Desarrollo de ASP.NET y web
-  - Almacenamiento y procesamiento de datos
-  - Plantillas de proyecto y elementos de .NET Framework
-  - Características avanzadas de ASP.NET
-- .NET 6 o 7 SDK instalado
+- Docker y Docker Compose instalados
+- (Opcional) Visual Studio Code o Visual Studio Community 2022
 
 ---
 
-### 📥 Pasos de instalación
+### 📥 Pasos de instalación y uso con Docker
 
 #### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu_usuario/personapi-dotnet.git
+git clone https://github.com/bsarmi13/personapi-dotnet.git
 cd personapi-dotnet
 ```
-#### 2. Crear la base de datos
-- Abrir SQL Server Management Studio
-- Conectarse al servidor local localhost\SQLEXPRESS
-- Ejecutar el script DDL-DML.sql para crear la base de datos persona_db y poblarla con datos iniciales
 
-#### 3. Configurar la cadena de conexión
-En appsettings.json:
+#### 2. Levantar los servicios con Docker Compose
+
 ```bash
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=persona_db;Trusted_Connection=True;TrustServerCertificate=true"
-}
+docker-compose up --build
 ```
-#### 4. Generar entidades con Scaffold
-En la Consola del Administrador de Paquetes:
+
+Esto levantará dos contenedores:
+- **sql_server**: Instancia de SQL Server 2022 con la base de datos y tablas inicializadas automáticamente.
+- **personapi**: Aplicación ASP.NET Core MVC conectada a la base de datos.
+
+> **Nota:** El script de inicialización puede requerir permisos, ejecutar el siguiente comando si es necesario:
 ```bash
-Scaffold-DbContext "Server=localhost\\SQLEXPRESS;Database=persona_db;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Entities
+chmod +x database/*
 ```
-Esto generará automáticamente las clases de entidad y el DbContext a partir de la base de datos.
 
-#### Ejecución del proyecto
-- Abrir el proyecto en Visual Studio
-- Asegurarse de que el proyecto personapi-dotnet está seleccionado como proyecto de inicio
-- Presionar F5 o hacer clic en Iniciar
-- Acceder a Swagger en:
-  http://localhost:{puerto}/swagger
+#### 3. Acceder a la aplicación
 
-📁 Estructura del repositorio
+- **Swagger UI:**  
+  [http://localhost:8081/swagger](http://localhost:8081/swagger)
+
+- **Vistas web:**  
+  [http://localhost:8081/](http://localhost:8081/)
+
+
+#### 4. Parar y limpiar los contenedores
+
+```bash
+docker-compose down
+```
+
+---
+
+## 📁 Estructura del repositorio
+
 ```bash
 personapi-dotnet/
 │
@@ -74,24 +76,12 @@ personapi-dotnet/
 │
 ├── Repositories/           # Interfaces y DAO
 ├── Controllers/            # Lógica de endpoints
-├── Views/                  # Vistas (si aplica)
+├── Views/                  # Vistas MVC
 ├── appsettings.json        # Configuración
-├── DDL-DML.sql             # Script de base de datos
+├── database/
+│   ├── schema.sql          # Script de base de datos
+│   └── entrypoint.sh       # Script de inicialización
+├── docker-compose.yml      # Orquestador de servicios
 ├── README.md               # Este archivo
-├── DOCUMENTACION/
-│   ├── Portada.pdf
-│   ├── Marco_Conceptual.pdf
-│   ├── Diseño.pdf
-│   ├── Procedimiento.pdf
-│   ├── Conclusiones_Lecciones.pdf
-│   └── Referencias.pdf
-```
-### Funcionalidad
-- CRUD completo del modelo Persona
-- Vistas web (si aplica)
-- API REST documentada con Swagger
 
-### Autores
-- Nombre: 
-- Universidad :Pontificia Universidad Javeriana
-- Curso: Arquitectura de Software
+```
